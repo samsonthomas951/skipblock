@@ -6,6 +6,16 @@
 // player's seek bar, like SponsorBlock's preview bar.
 
 (() => {
+  // Same glyph YouTube uses for its own "Next video" control — reused here
+  // as a small leading icon on the skip button and toast so they read as
+  // part of the native player chrome instead of a bolted-on extension UI.
+  // `fill="currentColor"` (swapped in for the original hardcoded "white")
+  // lets each usage pick up its own CSS `color`.
+  const NEXT_ICON_SVG =
+    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">' +
+    '<path d="M20 20C20.26 20 20.51 19.89 20.70 19.70C20.89 19.51 21 19.26 21 19V5C21 4.73 20.89 4.48 20.70 4.29C20.51 4.10 20.26 4 20 4C19.73 4 19.48 4.10 19.29 4.29C19.10 4.48 19 4.73 19 5V19C19 19.26 19.10 19.51 19.29 19.70C19.48 19.89 19.73 20 20 20ZM5.04 19.77L18 12L5.04 4.22C4.84 4.10 4.60 4.03 4.36 4.03C4.12 4.03 3.89 4.09 3.68 4.21C3.47 4.32 3.30 4.49 3.18 4.70C3.06 4.91 2.99 5.14 3 5.38V18.61C2.99 18.85 3.06 19.08 3.18 19.29C3.30 19.50 3.47 19.67 3.68 19.79C3.89 19.90 4.12 19.96 4.36 19.96C4.60 19.96 4.84 19.89 5.04 19.77Z" fill="currentColor"></path>' +
+    "</svg>";
+
   // Colors match SponsorBlock's own defaults so the bar looks familiar.
   const CATEGORY_META = {
     sponsor: { label: "sponsor segment", skipLabel: "Skip Sponsor", color: "#00d400", settingKey: "sponsorMode" },
@@ -41,6 +51,7 @@
   let barContainer = null;
   let buttonEl = null;
   let activeButtonSegment = null;
+  let positionObserver = null;
 
   function getMode(category) {
     const key = CATEGORY_META[category]?.settingKey;
@@ -77,59 +88,122 @@
     });
   }
 
-  // ---------- toast ----------
-
-  function ensureToastEl() {
-      const player = findPlayer();
-      if (!player) return null;
-      if (
-        toastEl &&
-        player.contains(toastEl)
-      ) {
-        return toastEl;
-      }
-      toastEl = document.createElement("div");
-      toastEl.id = "skipblock-toast";
-
-      player.appendChild(toastEl);
-      return toastEl;
-    }
-
-function showToast(text) {
-  if (!settings.showToast) return;
-  const el = ensureToastEl();
-  if (!el) return;
-  el.textContent = text;
-  el.classList.remove("skipblock-toast-visible");
-  void el.offsetWidth;
-  el.classList.add("skipblock-toast-visible");
-  clearTimeout(toastHideTimer);
-  toastHideTimer = setTimeout(() => {
-    el.classList.remove("skipblock-toast-visible");
-  }, 2200);
-}
-
-  // ---------- skip button (Skip Intro / Skip Promo / ...) ----------
+  // ---------- native chrome geometry ----------
+  //
+  // Both the toast and the skip button are appended straight onto the
+  // player (not into .ytp-chrome-bottom itself) so they keep working
+  // even when YouTube's own controls auto-hide. Their position is then
+  // read live off the real control bar / progress bar on every show,
+  // resize, and fullscreen change — so "under the progress bar,
+  // centered" and "just above the controls" hold true whether the
+  // player is a small windowed embed or fullscreen, with no separate
+  // fullscreen-specific logic needed.
 
   function findPlayer() {
     return document.querySelector("#movie_player, .html5-video-player");
   }
+
+  function findChromeBottom() {
+    const player = findPlayer();
+    return player ? player.querySelector(".ytp-chrome-bottom") : null;
+  }
+
+  function watchForReposition() {
+    const player = findPlayer();
+    if (!player) return;
+    if (positionObserver) positionObserver.disconnect();
+    positionObserver = new ResizeObserver(() => {
+      positionToast();
+      positionButton();
+    });
+    positionObserver.observe(player);
+  }
+
+  // Registered once — fires on entering/exiting fullscreen (and theater
+  // mode, which YouTube implements as a resize the ResizeObserver above
+  // already catches).
+  document.addEventListener("fullscreenchange", () => {
+    positionToast();
+    positionButton();
+  });
+
+  // ---------- toast ----------
+
+  function ensureToastEl() {
+    const player = findPlayer();
+    if (!player) return null;
+    if (toastEl && player.contains(toastEl)) return toastEl;
+    toastEl = document.createElement("div");
+    toastEl.id = "skipblock-toast";
+    toastEl.innerHTML =
+      '<span class="skipblock-icon">' + NEXT_ICON_SVG + "</span>" +
+      '<span class="skipblock-toast-text"></span>';
+    player.appendChild(toastEl);
+    return toastEl;
+  }
+
+  // Centers the toast horizontally over the player and pins its top edge
+  // to the bottom edge of the real progress bar — i.e. the same row
+  // YouTube's own chapter-title pill lives in — regardless of player size.
+  function positionToast() {
+    if (!toastEl) return;
+    const player = findPlayer();
+    const bar = findProgressBarContainer();
+    if (!player || !bar) return;
+    const playerRect = player.getBoundingClientRect();
+    const barRect = bar.getBoundingClientRect();
+    toastEl.style.top = `${barRect.bottom - playerRect.top}px`;
+  }
+
+  function showToast(text) {
+    if (!settings.showToast) return;
+    const el = ensureToastEl();
+    if (!el) return;
+    el.querySelector(".skipblock-toast-text").textContent = text;
+    positionToast();
+    el.classList.remove("skipblock-toast-visible");
+    void el.offsetWidth;
+    el.classList.add("skipblock-toast-visible");
+    clearTimeout(toastHideTimer);
+    toastHideTimer = setTimeout(() => {
+      el.classList.remove("skipblock-toast-visible");
+    }, 2200);
+  }
+
+  // ---------- skip button (Skip Intro / Skip Promo / ...) ----------
 
   function ensureButtonEl() {
     if (buttonEl && document.documentElement.contains(buttonEl)) return buttonEl;
     buttonEl = document.createElement("button");
     buttonEl.id = "skipblock-skip-button";
     buttonEl.type = "button";
+    buttonEl.innerHTML =
+      '<span class="skipblock-icon">' + NEXT_ICON_SVG + "</span>" +
+      '<span class="skipblock-skip-button-text"></span>';
     const player = findPlayer();
     (player || document.documentElement).appendChild(buttonEl);
     return buttonEl;
+  }
+
+  // Pins the button's bottom edge just above the real control bar's
+  // current top edge, so it sits "in place" whether that bar is the
+  // tall fullscreen chrome or the short windowed one.
+  function positionButton() {
+    if (!buttonEl) return;
+    const player = findPlayer();
+    const chromeBottom = findChromeBottom();
+    if (!player || !chromeBottom) return;
+    const playerRect = player.getBoundingClientRect();
+    const chromeRect = chromeBottom.getBoundingClientRect();
+    buttonEl.style.bottom = `${playerRect.bottom - chromeRect.top + 8}px`;
   }
 
   function showSkipButton(seg) {
     activeButtonSegment = seg;
     const meta = CATEGORY_META[seg.category];
     const el = ensureButtonEl();
-    el.textContent = meta.skipLabel || "Skip";
+    el.querySelector(".skipblock-skip-button-text").textContent = meta.skipLabel || "Skip";
+    positionButton();
     el.onclick = (e) => {
       e.stopPropagation();
       skipSegment(seg, true);
@@ -255,6 +329,7 @@ function showToast(text) {
       video.addEventListener("loadedmetadata", maybeJumpToHighlight, { once: true });
     }
     watchPlayerForBarReattach();
+    watchForReposition();
   }
 
   function detachVideo() {
@@ -265,6 +340,7 @@ function showToast(text) {
     video = null;
     hideSkipButton();
     if (playerObserver) playerObserver.disconnect();
+    if (positionObserver) positionObserver.disconnect();
   }
 
   // YouTube occasionally rebuilds the progress bar (e.g. switching in/out of

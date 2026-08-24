@@ -39,20 +39,35 @@
   display: block;
 }
 
+/* ---------------------------------------------------------
+   Skip Sponsor / Skip Intro / Skip Promo button
+
+   Styled like the rounded, translucent-black "capsule" pills in
+   YouTube's own redesigned control bar (play button, time
+   display, chapter title all share this look) — not the old
+   flat white "Skip Ad" pill. Pinned directly above the control
+   bar (.ytp-chrome-bottom) using its live geometry, so it lands
+   in the same relative spot whether the player is fullscreen,
+   theater, windowed, or a small embed.
+   --------------------------------------------------------- */
+
 #skipblock-skip-button {
   all: initial;
   position: absolute;
-  right: 16px;
+  right: 12px;
+  /* `bottom` is set inline by content.js, pinned to sit just
+     above the real control bar; this is a safe fallback. */
   bottom: 56px;
   z-index: 71;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   box-sizing: border-box;
 
   min-height: 36px;
 
-  padding: 8px 16px;
+  padding: 8px 16px 8px 12px;
 
   font-family: "YouTube Sans", Roboto, Arial, sans-serif;
 
@@ -61,12 +76,14 @@
   line-height: 20px;
 
   letter-spacing: 0;
-  color: #0f0f0f;
+  color: #fff;
 
-  background: #fff;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 
   border: 0;
-  border-radius: 2px;
+  border-radius: 999px;
 
   cursor: pointer;
 
@@ -84,15 +101,31 @@
 }
 
 #skipblock-skip-button:hover {
-  background: #f2f2f2;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 #skipblock-skip-button:active {
-  background: #e5e5e5;
+  background: rgba(0, 0, 0, 0.55);
 }
 
 #skipblock-skip-button.skipblock-skip-button-visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* "Next"-style icon reused from YouTube's own next-video control.
+   currentColor lets it pick up the button's white text color. */
+#skipblock-skip-button .skipblock-icon {
+  flex: none;
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: #fff;
+}
+
+#skipblock-skip-button .skipblock-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

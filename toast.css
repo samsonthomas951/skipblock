@@ -1,45 +1,57 @@
 /* =========================================================
-   SkipBlock — YouTube-native toast
+   SkipBlock — native-style toast
+   Matches the rounded, dark-transparent "capsule" pills YouTube's
+   own redesigned control bar uses (play/mute buttons, time
+   display, chapter title — all fully-rounded, translucent black,
+   frosted-glass pills). Positioned by content.js so it always
+   sits centered, directly under the progress bar — in both
+   fullscreen and windowed players, since it's anchored to the
+   real control bar's own geometry rather than fixed pixels.
    ========================================================= */
 
 #skipblock-toast {
   all: initial;
 
   position: absolute;
-
   left: 50%;
-  bottom: 64px;
+  /* `top` is set inline by content.js to sit right under the
+     progress bar; this is just a safe fallback. */
+  top: 0;
 
-  z-index: 9999;
+  z-index: 63;
 
-  transform: translate(-50%, 8px);
+  transform: translate(-50%, -6px);
   opacity: 0;
 
   pointer-events: none;
 
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
   font-family: "YouTube Sans", Roboto, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 20px;
-
+  line-height: 18px;
   letter-spacing: 0;
 
   color: #fff;
 
-  background: rgba(33, 33, 33, 0.96);
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 
   border: 0;
-  border-radius: 2px;
+  border-radius: 999px;
 
-  padding: 8px 16px;
+  padding: 7px 14px 7px 10px;
 
   white-space: nowrap;
 
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.25),
-    0 2px 8px rgba(0, 0, 0, 0.3);
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.25);
 
   transition:
     opacity 0.15s ease,
@@ -49,4 +61,24 @@
 #skipblock-toast.skipblock-toast-visible {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* "Next"-style icon reused from YouTube's own next-video control,
+   shown before the toast text (e.g. "Skipped sponsor segment"). */
+#skipblock-toast .skipblock-icon {
+  flex: none;
+  display: block;
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}
+
+#skipblock-toast .skipblock-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#skipblock-toast .skipblock-toast-text {
+  display: block;
 }

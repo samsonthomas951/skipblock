@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SkipBlock",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Colored SponsorBlock segments on the seek bar, auto-skip for sponsors and non-music sections, and Skip Intro / Skip Promo buttons — powered by the SponsorBlock database.",
   "permissions": ["storage"],
   "host_permissions": ["https://sponsor.ajay.app/*"],

@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 290px;
+  background: #111214;
+  color: #e8e8ea;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+header img {
+  display: block;
+  flex: none;
+}
+
+h1 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #8a8a8f;
+}
+
+section {
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+section:last-of-type {
+  border-bottom: none;
+}
+
+h2 {
+  margin: 4px 0 8px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b6b70;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.row span:first-child {
+  color: #d6d6d9;
+}
+
+.row input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 32px;
+  height: 18px;
+  border-radius: 999px;
+  background: #2c2d31;
+  transition: background 0.15s ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #b8b8bd;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+input[type="checkbox"]:checked + .switch {
+  background: #2b6355;
+}
+
+input[type="checkbox"]:checked + .switch::after {
+  transform: translateX(14px);
+  background: #6ee7b7;
+}
+
+input[type="checkbox"]:focus-visible + .switch {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.cat-name {
+  flex: 1;
+  color: #d6d6d9;
+}
+
+.cat-hint {
+  font-size: 11px;
+  color: #6b6b70;
+}
+
+select {
+  flex: none;
+  background: #1c1d20;
+  color: #e8e8ea;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+select:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 1px;
+}
+
+footer {
+  padding: 10px 18px 14px;
+  font-size: 10px;
+  color: #55555a;
+  text-align: center;
+}

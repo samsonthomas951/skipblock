@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>SkipBlock</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="icons/icon32.png" alt="" width="20" height="20" />
+    <div>
+      <h1>SkipBlock</h1>
+      <p class="subtitle">Colored segments &amp; quiet skipping for YouTube</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>Segment categories</h2>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#00d400"></span>
+      <span class="cat-name">Sponsor</span>
+      <select data-key="sponsorMode">
+        <option value="off">Off</option>
+        <option value="button">Skip button</option>
+        <option value="autoskip">Auto-skip</option>
+      </select>
+    </div>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#00ffff"></span>
+      <span class="cat-name">Intro</span>
+      <select data-key="introMode">
+        <option value="off">Off</option>
+        <option value="button">Skip button</option>
+        <option value="autoskip">Auto-skip</option>
+      </select>
+    </div>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#ffff00"></span>
+      <span class="cat-name">Promotion</span>
+      <select data-key="selfpromoMode">
+        <option value="off">Off</option>
+        <option value="button">Skip button</option>
+        <option value="autoskip">Auto-skip</option>
+      </select>
+    </div>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#cc00ff"></span>
+      <span class="cat-name">Interaction</span>
+      <select data-key="interactionMode">
+        <option value="off">Off</option>
+        <option value="button">Skip button</option>
+        <option value="autoskip">Auto-skip</option>
+      </select>
+    </div>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#ff9900"></span>
+      <span class="cat-name">Non-music</span>
+      <select data-key="musicOfftopicMode">
+        <option value="off">Off</option>
+        <option value="button">Skip button</option>
+        <option value="autoskip">Auto-skip</option>
+      </select>
+    </div>
+
+    <div class="cat-row">
+      <span class="swatch" style="background:#ff1684"></span>
+      <span class="cat-name">Highlight</span>
+      <span class="cat-hint">jump on play</span>
+    </div>
+  </section>
+
+  <section>
+    <label class="row">
+      <span>Jump to highlight on start</span>
+      <input type="checkbox" data-key="highlight" />
+      <span class="switch"></span>
+    </label>
+    <label class="row">
+      <span>Show colored segment bar</span>
+      <input type="checkbox" data-key="showBar" />
+      <span class="switch"></span>
+    </label>
+    <label class="row">
+      <span>Show skip toast</span>
+      <input type="checkbox" data-key="showToast" />
+      <span class="switch"></span>
+    </label>
+  </section>
+
+  <footer>Segment data from SponsorBlock</footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

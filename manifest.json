@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "SkipBlock",
+  "version": "1.1.0",
+  "description": "Colored SponsorBlock segments on the seek bar, auto-skip for sponsors and non-music sections, and Skip Intro / Skip Promo buttons — powered by the SponsorBlock database.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://sponsor.ajay.app/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["toast.css", "overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

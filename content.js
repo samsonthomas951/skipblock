@@ -80,26 +80,34 @@
   // ---------- toast ----------
 
   function ensureToastEl() {
-    if (toastEl && document.documentElement.contains(toastEl)) return toastEl;
-    toastEl = document.createElement("div");
-    toastEl.id = "skipblock-toast";
-    document.documentElement.appendChild(toastEl);
-    return toastEl;
-  }
+      const player = findPlayer();
+      if (!player) return null;
+      if (
+        toastEl &&
+        player.contains(toastEl)
+      ) {
+        return toastEl;
+      }
+      toastEl = document.createElement("div");
+      toastEl.id = "skipblock-toast";
 
-  function showToast(text) {
-    if (!settings.showToast) return;
-    const el = ensureToastEl();
-    el.textContent = text;
+      player.appendChild(toastEl);
+      return toastEl;
+    }
+
+function showToast(text) {
+  if (!settings.showToast) return;
+  const el = ensureToastEl();
+  if (!el) return;
+  el.textContent = text;
+  el.classList.remove("skipblock-toast-visible");
+  void el.offsetWidth;
+  el.classList.add("skipblock-toast-visible");
+  clearTimeout(toastHideTimer);
+  toastHideTimer = setTimeout(() => {
     el.classList.remove("skipblock-toast-visible");
-    // force reflow so the animation restarts if a toast is already showing
-    void el.offsetWidth;
-    el.classList.add("skipblock-toast-visible");
-    clearTimeout(toastHideTimer);
-    toastHideTimer = setTimeout(() => {
-      el.classList.remove("skipblock-toast-visible");
-    }, 2200);
-  }
+  }, 2200);
+}
 
   // ---------- skip button (Skip Intro / Skip Promo / ...) ----------
 

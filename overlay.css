@@ -1,4 +1,12 @@
-/* Colored segment overlay on the YouTube seek bar. */
+/* =========================================================
+   SkipBlock — YouTube player overlay
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   Colored segment overlay on the YouTube seek bar
+   --------------------------------------------------------- */
+
 #skipblock-bar {
   all: initial;
   position: absolute;
@@ -31,33 +39,56 @@
   display: block;
 }
 
-/* "Skip Intro" / "Skip Promo" / ... button, styled like YouTube's own
-   native skip buttons. */
 #skipblock-skip-button {
   all: initial;
   position: absolute;
   right: 16px;
   bottom: 56px;
   z-index: 71;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  min-height: 36px;
+
+  padding: 8px 16px;
 
   font-family: "YouTube Sans", Roboto, Arial, sans-serif;
+
   font-size: 14px;
   font-weight: 500;
+  line-height: 20px;
+
+  letter-spacing: 0;
   color: #0f0f0f;
-  background: #ffffff;
-  border-radius: 4px;
-  padding: 9px 16px;
+
+  background: #fff;
+
+  border: 0;
+  border-radius: 2px;
+
   cursor: pointer;
 
   opacity: 0;
   transform: translateY(6px);
   pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    background-color 0.1s ease;
+
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 #skipblock-skip-button:hover {
-  background: #e6e6e6;
+  background: #f2f2f2;
+}
+
+#skipblock-skip-button:active {
+  background: #e5e5e5;
 }
 
 #skipblock-skip-button.skipblock-skip-button-visible {
